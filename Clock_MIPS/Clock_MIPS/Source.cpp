@@ -8,29 +8,63 @@ using namespace std;
 
 
 //Truong
+//Lay ngay trong chuoi TIME DD/MM/YYYY
 int Day(char* TIME) {
-
+	int res = 0;
+	res = (TIME[0] - '0') * 10;
+	res += (TIME[1] - '0');
+	return res;
 }
 
 //Truong
+//Lay thang trong chuoi TIME DD/MM/YYYY
 int Month(char* TIME) {
-
+	int res = 0;
+	res = (TIME[3] - '0') * 10;
+	res += (TIME[4] - '0');
+	return res;
 }
 
 //Truong
+//Lay nam trong chuoi TIME DD/MM/YYYY
 int Year(char* TIME) {
+	int res = 0;
+	res = (TIME[6] - '0') * 1000;
+	res += (TIME[7] - '0') * 100;
+	res += (TIME[8] - '0') * 10;
+	res += (TIME[9] - '0');
+	return res;
+}
 
+//Truong
+//Nam year la nam nhuan thi tra ve 1, nguoc lai la 0
+int LeapYearY(int year) {
+	if ((year % 4) == 0 && (year % 100) != 100)
+		return 1;
+	if ((year % 400) == 0)
+		return 1;
+	return 0;
 }
 
 //Truong
 //Ten 2 ham khac nhau de mai mot viet MIPS phan biet giua LeapYearC char* voi LeapYearY year
+//Nam DD/MM/YYYY la nam nhuan thi tra ve 1, nguoc lai la 0
 int LeapYearC(char* TIME) {
-
+	int year = Year(TIME);
+	return LeapYearY(year);
 }
 
 //Truong
-int LeapYearY(int year) {
-
+//Tim 2 nam nhuan lien tren va lien duoi nam trong chuoi TIME
+void FindTwoLeapYears(char* TIME, int& year1, int& year2)
+{
+	int year = Year(TIME);
+	year1 = year - 1;
+	while (LeapYearY(year1) == 0)
+		year1--;
+	year2 = year + 1;
+	while (LeapYearY(year2) == 0)
+		year2++;
 }
 
 void strcpy(char* des, char* res) {
@@ -134,17 +168,6 @@ char* Convert(char* TIME, char type) {
 	return res;
 }
 
-//Truong
-int GetTime(char* TIME_1, char* TIME_2) {
-
-}
-
-//Truong
-//mau ket qua tra ve xem o file de bai
-char* WeekDay(char* TIME) {
-
-}
-
 //Tai
 int getStandardDay(char *TIME) {
 	int day = Day(TIME);
@@ -158,6 +181,49 @@ int getStandardDay(char *TIME) {
 	return year * 365 + bonus + diY;
 }
 
+//Truong
+//Tinh khoang cach tu TIME_1 toi TIME_2 (don vi ngay)
+int GetTime(char* TIME_1, char* TIME_2) {
+	return getStandardDay(TIME_2) - getStandardDay(TIME_1);
+}
+
+// 1.Sun  2.Mon  3.Tues  4.Wed  5.Thurs  6.Fri  7.Sat
+//new char* trong nay
+char* getNameDay(int day) {
+	char *res = new char[6];
+	switch (day) {
+	case 1:
+		res = "Sun"; break;
+	case 2:
+		res = "Mon"; break;
+	case 3:
+		res = "Tues"; break;
+	case 4:
+		res = "Wed"; break;
+	case 5:
+		res = "Thurs"; break;
+	case 6:
+		res = "Fri"; break;
+	case 7:
+		res = "Sat"; break;
+	default:
+		res = "N/A";
+	}
+	return res;
+}
+
+//Truong
+//Cho biet gia tri ngay trong chuoi TIME la thu may trong tuan
+char* WeekDay(char* TIME) {
+	// Ngay 10 thang 12 nam 2015 la thu 5. Lay day lam chuan
+	char* chuan = Date(10, 12, 2015, chuan);
+	int t = GetTime(chuan, TIME);
+	delete[] chuan;
+	t = (5 + 7 + (t % 7)) % 7;	//5 la thu nam
+	if (t == 0)
+		t = 7;
+	return getNameDay(t);
+}
 
 //Vinh
 int numberOfDaysInMonth(int month, int year) {
