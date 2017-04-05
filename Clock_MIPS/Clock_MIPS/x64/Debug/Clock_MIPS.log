@@ -1,0 +1,9 @@
+﻿  Source.cpp
+c:\codes\mips\clock_mips\clock_mips\clock_mips\source.cpp(13): error C4716: 'Day': must return a value
+c:\codes\mips\clock_mips\clock_mips\clock_mips\source.cpp(23): error C4716: 'Year': must return a value
+c:\codes\mips\clock_mips\clock_mips\clock_mips\source.cpp(18): error C4716: 'Month': must return a value
+c:\codes\mips\clock_mips\clock_mips\clock_mips\source.cpp(34): error C4716: 'LeapYearY': must return a value
+c:\codes\mips\clock_mips\clock_mips\clock_mips\source.cpp(29): error C4716: 'LeapYearC': must return a value
+c:\codes\mips\clock_mips\clock_mips\clock_mips\source.cpp(140): error C4716: 'GetTime': must return a value
+c:\codes\mips\clock_mips\clock_mips\clock_mips\source.cpp(146): error C4716: 'WeekDay': must return a value
+c:\codes\mips\clock_mips\clock_mips\clock_mips\source.cpp(152): error C4716: 'numberOfDaysInMonth': must return a value
