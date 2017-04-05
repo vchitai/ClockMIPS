@@ -92,30 +92,43 @@ char* getName(int month) {
 	switch (month) {
 		case 1: 
 			res = "Jan";
+			break;
 		case 2: 
 			res = "Feb";
+			break;
 		case 3: 
 			res = "Mar";
+			break;
 		case 4: 
 			res = "Apr";
+			break;
 		case 5: 
 			res = "May";
+			break;
 		case 6: 
 			res = "Jun";
+			break;
 		case 7: 
 			res = "Jul";
+			break;
 		case 8: 
 			res = "Aug";
+			break;
 		case 9: 
 			res = "Sep";
+			break;
 		case 10: 
 			res = "Oct";
+			break;
 		case 11:
 			res = "Nov";
+			break;
 		case 12:
 			res = "Dec";
+			break;
 		default:
-			res = "N/A";			
+			res = "N/A";
+			break;
 	}
 	return res;
 }
@@ -129,6 +142,7 @@ char* Convert(char* TIME, char type) {
 		res = new char[strlen(TIME)+1];
 	strcpy(res,TIME);
 	switch(type) {
+	case 'a':
 	case 'A': {
 		char temp1 = res[0];
 		char temp2 = res[1];
@@ -138,10 +152,11 @@ char* Convert(char* TIME, char type) {
 		res[4] = temp2;
 		break;
 	}
+	case 'b':
 	case 'B': {
 		char* mon = getName(Month(res));
 		strcpy(res, Convert(res, 'A'));
-		for (int i = 0; i <= strlen(res); i++)
+		for (int i = strlen(res); i >= 0; i--)
 			res[i + 1] = res[i];
 		res[0] = mon[0];
 		res[1] = mon[1];
@@ -150,22 +165,57 @@ char* Convert(char* TIME, char type) {
 		res[6] = ',';
 		break;
 	}
+	case 'c':
 	case 'C': {
 		strcpy(res, Convert(res, 'B'));
 		char temp1 = res[0];
 		char temp2 = res[1];
-		res[0] = res[4];
+		char temp3 = res[2];
+  		res[0] = res[4];
 		res[1] = res[5];
-		res[4] = res[2];
-		res[5] = res[3];
-		res[2] = temp1;
-		res[3] = temp2;
+		res[2] = res[3];
+		res[3] = temp1;
+		res[4] = temp2;
+		res[5] = temp3;
 		break;
 	}
 	default:
 		break;			
 	}
 	return res;
+}
+
+//Vinh
+int numberOfDaysInMonth(int month, int year) {
+	switch (month) {
+	case 1:
+		return 31;
+	case 2:
+		if (LeapYearY(year))
+			return 29;
+		else return 28;
+	case 3:
+		return 31;
+	case 4:
+		return 30;
+	case 5:
+		return 31;
+	case 6:
+		return 30;
+	case 7:
+		return 31;
+	case 8:
+		return 31;
+	case 9:
+		return 30;
+	case 10:
+		return 31;
+	case 11:
+		return 30;
+	case 12:
+		return 31;
+	}
+	return 0;
 }
 
 //Tai
@@ -216,46 +266,14 @@ char* getNameDay(int day) {
 //Cho biet gia tri ngay trong chuoi TIME la thu may trong tuan
 char* WeekDay(char* TIME) {
 	// Ngay 10 thang 12 nam 2015 la thu 5. Lay day lam chuan
-	char* chuan = Date(10, 12, 2015, chuan);
+	char* chuan = new char[11];
+	chuan = Date(10, 12, 2015, chuan);
 	int t = GetTime(chuan, TIME);
 	delete[] chuan;
 	t = (5 + 7 + (t % 7)) % 7;	//5 la thu nam
 	if (t == 0)
 		t = 7;
 	return getNameDay(t);
-}
-
-//Vinh
-int numberOfDaysInMonth(int month, int year) {
-	switch (month) {
-	case 1:
-		return 31;
-	case 2:
-		if (LeapYearY(year))
-			return 29;
-		else return 28;
-	case 3:
-		return 31;
-	case 4:
-		return 30;
-	case 5:
-		return 31;
-	case 6:
-		return 30;
-	case 7:
-		return 31;
-	case 8:
-		return 31;
-	case 9:
-		return 30;
-	case 10:
-		return 31;
-	case 11:
-		return 30;
-	case 12:
-		return 31;
-	}
-	return 0;
 }
 
 int ConvertToNumber(char* TIME, int lower_bound, int upper_bound) {
@@ -308,6 +326,10 @@ int nhap(char *TIME) {
 
 	day = ConvertToNumber(DAY, 1, numberOfDaysInMonth(month, year));	
 
+	if (day == -1) {
+		return -1;
+	}
+
 	TIME = Date(day, month, year, TIME);
 	return 1;
 }
@@ -319,9 +341,9 @@ void xuat(char *TIME) {
 
 int main() {	
 
-	char* TIME = new char[10];
-	char* TIME_1 = new char[10];
-	char* TIME_2 = new char[10];
+	char* TIME = new char[11];
+	char* TIME_1 = new char[11];
+	char* TIME_2 = new char[11];
 
 	while (true) {
 		do {
@@ -355,7 +377,8 @@ int main() {
 			bool break2 = false;
 			int id = 0; char ch = ' ';
 			int t_year = 0, error1 = 0, error2 = 0;
-			printf("Lua chon: "); scanf("%d", id);
+			printf("Lua chon: ");
+			fflush(stdin); scanf("%d", &id);
 			
 			switch (id) {
 			case 1:
@@ -365,7 +388,8 @@ int main() {
 
 			case 2:
 				printf("Nhap kieu dinh dang: ");
-				scanf("%c", ch);
+				fflush(stdin);
+				scanf("%c", &ch);
 				printf("Ket qua: ");
 				xuat(Convert(TIME, ch));
 				break;
@@ -394,13 +418,19 @@ int main() {
 					printf("1 trong 2 chuoi nhap vao sai cu phap\n");
 				else {
 					printf("Ket qua: ");
-					printf("%d", abs(GetTime(TIME_1, TIME_2)));
+					printf("%d\n", abs(GetTime(TIME_1, TIME_2)));
 				}
 				break;
 
 			case 6:
-				//Ham bo sung
-			case 7:				
+				int year1, year2;
+				FindTwoLeapYears(TIME, year1, year2);
+				printf("Hai nam nhuan gan nhat la %d va %d\n ", year1, year2);
+				break;
+
+			case 7:		
+
+				break;
 
 			case 8:
 				break2 = true;
