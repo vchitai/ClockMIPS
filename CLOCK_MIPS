@@ -31,6 +31,16 @@ leapYearC:
 
 findTwoLeapYear:
 	jr $ra
+	
+Strlen:	# Tinh do dai chuoi, bat dau tu $a0, ket thuc bang '\0' (int==0)
+	li $v0, -1	# res = 0
+	move $t0, $a0	# bien chay tu vi tri cua ky tu dau tien
+	Loop11:
+	addi $v0, $v0, 1
+	lb $t1, 0($t0)	#doc ky tu vao t1
+	addi $t0, $t0, 1
+	bnez $t1, Loop11	#ky tu != 0 thi Loop
+	jr $ra
 
 strcpy:
 	jr $ra
