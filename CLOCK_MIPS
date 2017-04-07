@@ -710,3 +710,352 @@ output:
 	jr $ra
 
 main:
+.data
+TIME: .space 100
+TIME_1: .space 100
+TIME_2: .space 100
+
+INPUT_ERROR: .asciiz "Chuoi khong hop len, moi ban nhap lai.\n"
+TABLE: .asciiz "----------Ban hay chon 1 trong cac thao tac duoi day----------\n"
+
+C1: .asciiz "1. Xuat chuoi TIME theo dinh dang DD/MM/YYYY.\n"
+C2: .asciiz "2. Chuyen doi chuoi TIME thanh mot trong dinh dang sau:\n"
+C2A: .asciiz "     A. MM/DD/YYYY.\n"
+C2B: .asciiz "     B. Month DD, YYYY.\n"
+C2C: .asciiz "     C. DD Month, YYYY.\n"
+C3: .asciiz "3. Cho biet ngay vua nhap la ngay thu may.\n"
+C4: .asciiz "4. Kiem tra nam trong chuoi TIME co phai la nam nhuan khong.\n"
+C5: .asciiz "5. Cho biet khoang thoi gian giua 2 chuoi TIME_1 va TIME_2.\n"
+C6: .asciiz "6. Cho biet hai nam nhuan gan nhat.\n"
+C7: .asciiz "7. Kiem tra du lieu dau vao.\n"
+C8: .asciiz "8. Nhap vao Ngay Thang Nam moi.\n"
+C9: .asciiz "9. Thoat.\n"
+C10: .asciiz "--------------------------------------------------------------\n"
+
+LUA_CHON: .asciiz "Lua chon: "
+KET_QUA: .asciiz "Ket qua: "
+KIEU_DINH_DANG: .asciiz "Nhap kieu dinh dang: "
+
+LA_NAM_NHUAN: .asciiz " la nam nhaun\n"
+KO_LA_NAM_NHUAN: .asciiz " khong la nam nhuan\n"
+
+INPUT_ERROR_5: .asciiz "1 trong 2 chuoi nhap vao sai cu phap\n"
+HAI_NAM_NHUAN: .asciiz "Hai nam nhuan gan nhat la "
+VA: .asciiz " va "
+ENDL: .asciiz "\n"
+
+.text
+
+	la $s0, TIME
+	la $s1, TIME_1
+	la $s2, TIME_2
+
+loop_main:
+	
+	loop_input:
+		add $a0, $s0, $0
+		jal input
+
+		slt $t0, $v0, $0
+		beq $t0 $0 end_loop_input
+		
+		li $v0, 4
+		la $a0, INPUT_ERROR
+		syscall
+		j loop_input
+		
+	end_loop_input:
+
+	li $v0, 4
+	
+	la $a0, TABLE
+	syscall
+	la $a0, C1
+	syscall
+	la $a0, C2
+	syscall
+	la $a0, C2A
+	syscall
+	la $a0, C2B
+	syscall
+	la $a0, C2C
+	syscall
+	la $a0, C3
+	syscall
+	la $a0, C4
+	syscall
+	la $a0, C5
+	syscall
+	la $a0, C6
+	syscall
+	la $a0, C7
+	syscall
+	la $a0, C8
+	syscall
+	la $a0, C9
+	syscall
+	la $a0, C10
+	syscall
+
+	add $t0, $0, $0
+	add $t1, $0, $0
+	add $t2, $0, $0
+	add $t3, $0, $0
+	add $t4, $0, $0
+
+	loop_lua_chon:
+		
+		li $v0, 4
+		la $a0, LUA_CHON
+		syscall
+
+		li $v0, 5
+		syscall
+		add $t0, $v0, $0
+
+		bne $t0 1 not_id_1
+		#id == 1		
+		
+		#push stack
+		addi $sp, $sp, -20
+		sw $t0, 0($sp)
+		sw $t1, 4($sp)
+		sw $t2, 8($sp)
+		sw $t3, 12($sp)
+		sw $t4, 16($sp)
+
+		li $v0, 4
+		la $a0, KET_QUA
+		syscall
+
+		add $a0, $s0, $0
+		jal output
+
+		#pop stack	
+		lw $t0, 0($sp)
+		lw $t1, 4($sp)
+		lw $t2, 8($sp)
+		lw $t3, 12($sp)
+		lw $t4, 16($sp)
+		addi $sp, $sp, 20
+
+		j loop_lua_chon
+	
+		not_id_1:
+
+		bne $t0 2 not_id_2
+		#id == 2
+
+		li $v0, 4
+		la $a0, KIEU_DINH_DANG
+		syscall
+
+		li $v0, 12
+		syscall
+		lb $t1, 0($v0)
+
+		li $v0, 4
+		la $a0, KET_QUA
+		syscall
+	
+		#push stack
+		addi $sp, $sp, -20
+		sw $t0, 0($sp)
+		sw $t1, 4($sp)
+		sw $t2, 8($sp)
+		sw $t3, 12($sp)
+		sw $t4, 16($sp)
+
+		add $a0, $s0, $0
+		add $a1, $t1, $0
+		jal convert
+
+		add $a0, $v0, $0
+		jal output
+
+		#pop stack	
+		lw $t0, 0($sp)
+		lw $t1, 4($sp)
+		lw $t2, 8($sp)
+		lw $t3, 12($sp)
+		lw $t4, 16($sp)
+		addi $sp, $sp, 20
+
+		j loop_lua_chon
+			
+		not_id_2:
+		
+		bne $t0 3 not_id_3
+
+		#id == 3
+		li $v0, 4
+		la $a0, KET_QUA
+		syscall
+
+		#push stack
+		addi $sp, $sp, -20
+		sw $t0, 0($sp)
+		sw $t1, 4($sp)
+		sw $t2, 8($sp)
+		sw $t3, 12($sp)
+		sw $t4, 16($sp)
+
+		add $a0, $s1, $0
+		jal weekDay
+
+		move $a0, $v0
+		li $v0, 4
+		syscall
+
+		#pop stack	
+		lw $t0, 0($sp)
+		lw $t1, 4($sp)
+		lw $t2, 8($sp)
+		lw $t3, 12($sp)
+		lw $t4, 16($sp)
+		addi $sp, $sp, 20
+
+		j loop_lua_chon
+	
+		not_id_3:
+
+		bne $t0 4 not_id_4
+		
+		#id == 4
+		#push stack
+		addi $sp, $sp, -20
+		sw $t0, 0($sp)
+		sw $t1, 4($sp)
+		sw $t2, 8($sp)
+		sw $t3, 12($sp)
+		sw $t4, 16($sp)
+
+		add $a0, $s0, $0
+		jal year		
+
+		#pop stack	
+		lw $t0, 0($sp)
+		lw $t1, 4($sp)
+		lw $t2, 8($sp)
+		lw $t3, 12($sp)
+		lw $t4, 16($sp)
+		addi $sp, $sp, 20
+
+		add $t2, $v0, $0
+`
+		li $v0, 4
+		la $a0, KET_QUA
+		syscall
+
+		li $v0, 1
+		lw $a0, $t2
+		syscall
+
+		#push stack
+		addi $sp, $sp, -20
+		sw $t0, 0($sp)
+		sw $t1, 4($sp)
+		sw $t2, 8($sp)
+		sw $t3, 12($sp)
+		sw $t4, 16($sp)
+
+		jal leapYearY
+
+		#pop stack	
+		lw $t0, 0($sp)
+		lw $t1, 4($sp)
+		lw $t2, 8($sp)
+		lw $t3, 12($sp)
+		lw $t4, 16($sp)
+		addi $sp, $sp, 20
+
+		beq $v0, $0, not_leap_year
+		li $v0, 4
+		la $a0, LA_NAM_NHUAN		
+		syscall			
+		j end_if_not_leap_year
+
+		not_leap_year:
+		li $v0, 4
+		la $a0, KHONG_LA_NAM_NHUAN		
+		syscall
+
+		end_if_not_leap_year:
+
+		j loop_lua_chon
+	
+		not_id_4:
+
+		bne $t0, 5, not_id_5
+
+		#id == 5
+
+		j loop_lua_chon		
+
+		not_id_5:
+
+		bne $t0, 6, nod_id_6
+
+		#push stack
+		addi $sp, $sp, -20
+		sw $t0, 0($sp)
+		sw $t1, 4($sp)
+		sw $t2, 8($sp)
+		sw $t3, 12($sp)
+		sw $t4, 16($sp)
+
+		add $a0, $s0, $0
+		jal findTwoLeapYear
+
+		#pop stack	
+		lw $t0, 0($sp)
+		lw $t1, 4($sp)
+		lw $t2, 8($sp)
+		lw $t3, 12($sp)
+		lw $t4, 16($sp)
+		addi $sp, $sp, 20
+
+		add $t5, $v0, $0
+		add $t6, $v1, $0
+
+		li $v0, 4
+		la $a0, HAI_NAM_NHUAN
+		syscall
+
+		li $v0, 1
+		lw $a0, $t5
+		syscall
+
+		li $v0, 4
+		la $a0, VA
+		syscall
+
+		li $v0, 1
+		lw $a0, $t6
+		syscall
+
+		j loop_lua_chon
+	
+		not_id_6:
+
+		bne $t0, 7, not_id_7
+		
+		j loop_lua_chon
+
+		not_id_7:
+
+		bne $t0, 8, not_id8
+
+		j end_loop_lua_chon
+
+		not_id_8:
+		
+		j end_loop_main
+
+	end_loop_lua_chon:
+	
+		
+end_loop_main:	
+
+	li $v0, 10
+	syscall
