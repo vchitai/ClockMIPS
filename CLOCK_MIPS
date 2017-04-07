@@ -990,8 +990,101 @@ loop_main:
 
 		#id == 5
 
-		j loop_lua_chon		
+		#push stack
+		addi $sp, $sp, -20
+		sw $t0, 0($sp)
+		sw $t1, 4($sp)
+		sw $t2, 8($sp)
+		sw $t3, 12($sp)
+		sw $t4, 16($sp)
 
+		add $a0, $s1, $0
+		jal input
+
+		#pop stack	
+		lw $t0, 0($sp)
+		lw $t1, 4($sp)
+		lw $t2, 8($sp)
+		lw $t3, 12($sp)
+		lw $t4, 16($sp)
+		addi $sp, $sp, 20
+
+		add $t3, $v0, $0
+
+		#push stack
+		addi $sp, $sp, -20
+		sw $t0, 0($sp)
+		sw $t1, 4($sp)
+		sw $t2, 8($sp)
+		sw $t3, 12($sp)
+		sw $t4, 16($sp)
+
+		add $a0, $s2, $0
+		jal input
+
+		#pop stack	
+		lw $t0, 0($sp)
+		lw $t1, 4($sp)
+		lw $t2, 8($sp)
+		lw $t3, 12($sp)
+		lw $t4, 16($sp)
+		addi $sp, $sp, 20
+
+		add $t4, $v0, $0
+
+		slt $t5, $t3, $0
+		slt $t6, $t4, $0
+
+		bne $t5, 0, print_input_error
+		bne $t6, 0, print_input_error
+	
+		li $v0, 4
+		la $a0, KET_QUA
+		syscall
+
+		#push stack
+		addi $sp, $sp, -20
+		sw $t0, 0($sp)
+		sw $t1, 4($sp)
+		sw $t2, 8($sp)
+		sw $t3, 12($sp)
+		sw $t4, 16($sp)
+
+		add $a0, $s1, $0
+		add $a1, $s2, $0
+		jal getTime
+
+		#pop stack	
+		lw $t0, 0($sp)
+		lw $t1, 4($sp)
+		lw $t2, 8($sp)
+		lw $t3, 12($sp)
+		lw $t4, 16($sp)
+		addi $sp, $sp, 20
+
+		add $t5, $v0, $0
+
+		slt $t6, $t5, $t0
+		bne $t6, $t0, get_abs
+		j not_get_abs
+		get_abs:
+		sub $t5, $0, $t5
+		not_get_abs:
+
+		li $v0, 1
+		lw $a0, $t5
+		syscall								
+
+		j no_input_error
+		print_input_error:
+			li $v0, 4
+			la $a0, INPUT_ERROR_5
+			syscall
+
+		no_input_error:
+
+		j loop_lua_chon	
+		
 		not_id_5:
 
 		bne $t0, 6, nod_id_6
