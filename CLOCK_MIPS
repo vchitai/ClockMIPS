@@ -1,0 +1,149 @@
+.data
+Jan : .asciiz "Jan"
+	Feb : .asciiz "Feb"
+	Mar : .asciiz "Mar"
+	Apr : .asciiz "Apr"
+	May : .asciiz "May"
+	Jun : .asciiz "Jun"
+	Jul : .asciiz "Jul"
+	Aug : .asciiz "Aug"
+	Sep : .asciiz "Sep"
+	Oct : .asciiz "Oct"
+	Nov : .asciiz "Nov"
+	Dec : .asciiz "Dec"
+	NoA : .asciiz "N/A"
+.text
+
+day:
+	jr $ra
+
+month:
+	jr $ra
+
+year:
+	jr $ra
+
+leapYearY:
+	jr $ra
+
+leapYearC:
+	jr $ra
+
+findTwoLeapYear:
+	jr $ra
+
+strcpy:
+	jr $ra
+
+date:
+	li $t1, 10
+	div  $a0, $t1
+	mflo  $t0
+	addi  $t0, $t0, 48
+	sw  $t0, 0($a3) #TIME[0] = day / 10
+	mfhi $t0
+	addi  $t0, $t0, 48
+	sw  $t0, 4($a3) #TIME[1] = day % 10
+	li $t0, 47
+	sw  $t0, 8($a3) #TIME[2] = '/'
+	div  $a1, $t1
+	mflo  $t0
+	addi  $t0, $t0, 48
+	sw  $t0, 12($a3) #TIME[3] = month / 10
+	mfhi $t0
+	addi  $t0, $t0, 48
+	sw  $t0, 16($a3) #TIME[4] = month % 10
+	addi  $t0, $0, 47
+	sw  $t0, 20($a3) #TIME[5] = '/'
+	addi $t1, $0, 1000
+	div  $a2, $t1
+	mflo  $t0
+	addi  $t0, $t0, 48
+	sw  $t0, 24($a3) #TIME[6] = year / 1000
+	mfhi $t0
+	addi $t1, $0, 100
+	div  $t0, $t1
+	mflo $t0
+	addi  $t0, $t0, 48
+	sw  $t0, 28($a3) #TIME[7] = year % 1000 / 100
+	mfhi $t0
+	addi $t1, $0, 10
+	div  $t0, $t1
+	mflo $t0
+	addi  $t0, $t0, 48
+	sw  $t0, 32($a3) #TIME[8] = year % 1000 % 100 / 10
+	mfhi $t0
+	addi  $t0, $t0, 48
+	sw $t0, 36($a3) #TIME[9] = year % 1000 % 100 % 10
+	sw $0, 40($a3) #TIME[10] = '\0'
+	add $v0, $a3, $0
+	jr $ra
+
+getMonthName :
+	bne $a0, 1, nJan
+	la $v0, Jan
+	nJan :
+		bne $a0, 2, nFeb
+		la $v0, Feb
+	nFeb :
+		bne $a0, 3, nMar
+		la $v0, Mar
+	nMar :
+		bne $a0, 4, nApr
+		la $v0, Apr
+	nApr :
+		bne $a0, 5, nMay
+		la $v0, May
+	nMay :
+		bne $a0, 6, nJun
+		la $v0, Jun
+	nJun :
+		bne $a0, 7, nJul
+		la $v0, Jul
+	nJul :
+		bne $a0, 8, nAug
+		la $v0, Aug
+	nAug :
+		bne $a0, 9, nSep
+		la $v0, Sep
+	nSep :
+		bne $a0, 10, nOct
+		la $v0, Oct
+	nOct :
+		bne $a0, 11, nNov
+		la $v0, Nov
+	nNov :
+		bne $a0, 12, nDec
+		la $v0, Dec
+	nDec :
+		la $v0, NoA
+	jr $ra
+
+convert:
+	jr $ra
+
+numberOfDaysInMonth:
+	jr $ra
+
+getStandardDay:
+	jr $ra
+
+getTime:
+	jr $ra
+
+getDayName:
+	jr $ra
+
+weekDay:
+	jr $ra
+
+convertToNumber:
+	jr $ra
+
+input:
+	jr $ra
+
+output:
+	jr $ra
+
+main:
