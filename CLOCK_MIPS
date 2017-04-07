@@ -41,10 +41,36 @@ year:	# Lay nam trong chuoi TIME DD/MM/YYYY, bat dau tu $a0
 	add $v0, $v0, $t0	# Cong vo v0
 	jr $ra
 
-leapYearY:
+leapYearY:	# Nam a0 la nam nhuan thi v0 = 1, nguoc lai v0 = 0
+	# Neu chia het cho 400 thi nhuan
+	li $t1, 400
+	rem $t0, $a0, $t1
+	beqz $t0, Leap11
+	# Neu chia het cho 4 va khong chia het cho 100 thi nhuan
+	li $t1, 4
+	rem $t0, $a0, $t1
+	bnez $t0, NotLeap11	# Neu khong chia het cho 4 thi khong nhuan
+	li $t1, 100	# Nguoc lai, da chia het cho 4, kiem tra chia het cho 100
+	rem $t0, $a0, $t1
+	bnez $t0, Leap11	# Neu cung khong chia het cho 100 thi nhuan
+	# Con lai khong nhuan
+	NotLeap11:
+	li $v0, 0
+	jr $ra
+	Leap11:
+	li $v0, 1
 	jr $ra
 
-leapYearC:
+leapYearC:	# Nam DD/MM/YYYY la nam nhuan thi v0 = 1, nguoc lai v0 = 0
+	addi $sp, $sp, -8
+	sw $ra, 4($sp)	# luu $ra vao stack
+	sw $a0, 0($sp)	# luu $a0 vao stack
+	jal year	# v0 = year
+	move $a0, $v0
+	jal leapYearY	# v0 = leapYearY
+	lw $a0, 0($sp)	# tra lai $a0
+	lw $ra, 4($sp)	# tra lai $ra
+	addi $sp, $sp, 8
 	jr $ra
 
 findTwoLeapYear:
