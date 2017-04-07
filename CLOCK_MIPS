@@ -25,7 +25,15 @@ day:	# Lay ngay trong chuoi TIME DD/MM/YYYY, bat dau tu $a0, tra ve gia tri so n
 	add $v0, $v0, $t0	# Cong vo v0
 	jr $ra
 
-month:
+month:	# Lay thang trong chuoi TIME DD/MM/YYYY, bat dau tu $a0
+	lb $t0, 3($a0)	# t0 la ky tu a[3]
+	addi $t0, $t0, -48	# tru 48 ra so
+	li $t1, 10
+	mul $t0, $t0, $t1	# nhan them 10 ra hang chuc
+	move $v0, $t0
+	lb $t0, 4($a0)	# t0 la ky tu a[4]
+	addi $t0, $t0, -48	# tru 48 ra so
+	add $v0, $v0, $t0	# Cong vo v0
 	jr $ra
 
 year:
