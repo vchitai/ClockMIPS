@@ -139,7 +139,7 @@ date:
 	sw $0, 10($a3) #TIME[10] = '\0'
 	add $v0, $a3, $0
 	jr $ra
-
+	
 getMonthName :
 .data
 	Jan : .asciiz "Jan"
@@ -208,7 +208,6 @@ getMonthName :
 	End1:
 	jr $ra
 
-
 convert:
 .data
 	res1: .byte 0:12
@@ -247,8 +246,12 @@ convert:
 	sb $t3, 1($t0)
 	sb $t1, 3($t0)
 	sb $t2, 4($t0) #Convert A
+	addi $sp, $sp, -4
+	sw $t0, 0($sp)
 	move $a0, $t0
 	jal strlen
+	lw $t0, 0($sp)
+	add $sp, $sp, 4
 	move $t1, $v0
 	add $t0, $t0, $t1
 	Loop5:	#res[i+1] = res[i]
@@ -259,9 +262,13 @@ convert:
 	addi $t0, $t0, -1
 	j Loop5
 	End9:
+	addi $sp, $sp, -4
+	sw $t0, 0($sp)
 	jal month #handle character
 	move $a0, $v0
 	jal getMonthName
+	lw $t0, 0($sp)
+	add $sp, $sp, 4
 	move $t1, $v0
 	lb $t2, 0($t1)
 	lb $t3, 1($t1)
@@ -280,7 +287,11 @@ convert:
 	bne $a1, 67, Next3
 	Branch5:
 	move $a0, $t0
+	addi $sp, $sp, -4
+	sw $t0, 0($sp)
 	jal strlen
+	lw $t0, 0($sp)
+	add $sp, $sp, 4
 	move $t1, $v0
 	add $t0, $t0, $t1
 	Loop6:	#res[i+1] = res[i]
@@ -291,9 +302,13 @@ convert:
 	addi $t0, $t0, -1
 	j Loop6
 	End10:
+	addi $sp, $sp, -4
+	sw $t0, 0($sp)
 	jal month #handle character
 	move $a0, $v0
 	jal getMonthName
+	lw $t0, 0($sp)
+	add $sp, $sp, 4
 	move $t1, $v0
 	lb $t2, 0($t1)
 	lb $t3, 1($t1)
@@ -315,18 +330,23 @@ convert:
 	addi $sp, $sp, 12
 	jr $ra
 
+
 numberOfDaysInMonth:
 	jr $ra
 
 getStandardDay:
 	addi $sp, $sp, -4
 	sw $ra, 0($sp)
+	addi $sp, $sp, -8
 	jal day
-	move $t0, $v0 #day
+	sw $v0, 0($sp) #day
 	jal month
-	move $t1, $v0 #month
+	sw $v0, 4($sp) #month
 	jal year
 	move $t2, $v0 #year
+	lw $t0, 0($sp)
+	lw $t1, 4($sp)
+	addi $sp, $sp, 8
 	li $t3, 4
 	div $t4, $t2, $t3
 	li $t3, 100
@@ -346,7 +366,13 @@ getStandardDay:
 	bge $t4, $t1, End2
 	move $a0, $t4
 	move $a1, $t2
+	addi $sp, $sp, -8
+	sw $t3, 0($sp)
+	sw $t4, 4($sp)
 	jal numberOfDaysInMonth
+	lw $t3, 0($sp)
+	lw $t4, 4($sp)
+	addi $sp, $sp, 8
 	add $t3, $t3, $v0 #sDay += nODIM
 	addi $t4, $t4, 1
 	j Loop1
@@ -411,6 +437,7 @@ convertToNumber:
 	End6:
 	jr $ra
 
+
 input:
 .data
 	buffer2: .space 100
@@ -458,25 +485,48 @@ input:
 	move $a0, $t2
 	li $a1, 0
 	li $a2, 9999
+	addi $sp, $sp, -16
+	sw $t0, 0($sp)
+	sw $t1, 4($sp)
+	sw $t2, 8($sp)
 	jal convertToNumber
-	move $t3, $v0
+	sw $v0, 12($sp)
 	#month
+	lw $t1, 4($sp)
 	move $a0, $t1
 	li $a1, 1
 	li $a2, 12
 	jal convertToNumber
 	move $t4, $v0
+	lw $t0, 0($sp)
+	lw $t1, 4($sp)
+	lw $t2, 8($sp)
+	lw $t3, 12($sp)
+	addi $sp, $sp, 16
 	beq $t3, -1, End101
 	beq $t4, -1, End101
 	#day
 	move $a0, $t4
 	move $a1, $t3
+	addi $sp, $sp, -20
+	sw $t0, 0($sp)
+	sw $t1, 4($sp)
+	sw $t2, 8($sp)
+	sw $t3, 12($sp)
+	sw $t4, 12($sp)
 	jal numberOfDaysInMonth
+	lw $t0, 0($sp)
 	move $a2, $v0
 	move $a0, $t0
 	li $a1, 1
 	jal convertToNumber
 	move $t5, $v0
+	lw $t0, 0($sp)
+	lw $t1, 4($sp)
+	lw $t2, 8($sp)
+	lw $t3, 12($sp)
+	lw $t4, 12($sp)
+	addi $sp, $sp, 20
 	beq $t5, -1, End101
 	move $a0, $t5
 	move $a1, $t4
