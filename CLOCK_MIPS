@@ -1,19 +1,3 @@
-.data
-Jan : .asciiz "Jan"
-	Feb : .asciiz "Feb"
-	Mar : .asciiz "Mar"
-	Apr : .asciiz "Apr"
-	May : .asciiz "May"
-	Jun : .asciiz "Jun"
-	Jul : .asciiz "Jul"
-	Aug : .asciiz "Aug"
-	Sep : .asciiz "Sep"
-	Oct : .asciiz "Oct"
-	Nov : .asciiz "Nov"
-	Dec : .asciiz "Dec"
-	NoA : .asciiz "N/A"
-.text
-
 day:	# Lay ngay trong chuoi TIME DD/MM/YYYY, bat dau tu $a0, tra ve gia tri so nguyen
 	lb $t0, 0($a0)	# t0 la ky tu dau
 	addi $t0, $t0, -48	# tru 48 ra so
@@ -66,7 +50,7 @@ leapYearC:
 findTwoLeapYear:
 	jr $ra
 	
-Strlen:	# Tinh do dai chuoi, bat dau tu $a0, ket thuc bang '\0' (int==0)
+strlen:	# Tinh do dai chuoi, bat dau tu $a0, ket thuc bang '\0' (int==0)
 	li $v0, -1	# res = 0
 	move $t0, $a0	# bien chay tu vi tri cua ky tu dau tien
 	Loop11:
@@ -77,6 +61,13 @@ Strlen:	# Tinh do dai chuoi, bat dau tu $a0, ket thuc bang '\0' (int==0)
 	jr $ra
 
 strcpy:
+	lb $t0, 0($a0)
+	beqz $t0, End7
+	sb $t0, 0($a1)
+	addi $a0, $a0, 1
+	addi $a1, $a1, 1
+	j strcpy
+	End7:
 	jr $ra
 
 date:
@@ -87,89 +78,257 @@ date:
 	sw  $t0, 0($a3) #TIME[0] = day / 10
 	mfhi $t0
 	addi  $t0, $t0, 48
-	sw  $t0, 4($a3) #TIME[1] = day % 10
+	sw  $t0, 1($a3) #TIME[1] = day % 10
 	li $t0, 47
-	sw  $t0, 8($a3) #TIME[2] = '/'
+	sw  $t0, 2($a3) #TIME[2] = '/'
 	div  $a1, $t1
 	mflo  $t0
 	addi  $t0, $t0, 48
-	sw  $t0, 12($a3) #TIME[3] = month / 10
+	sw  $t0, 3($a3) #TIME[3] = month / 10
 	mfhi $t0
 	addi  $t0, $t0, 48
-	sw  $t0, 16($a3) #TIME[4] = month % 10
-	addi  $t0, $0, 47
-	sw  $t0, 20($a3) #TIME[5] = '/'
-	addi $t1, $0, 1000
+	sw  $t0, 4($a3) #TIME[4] = month % 10
+	li $t0, 47
+	sw  $t0, 5($a3) #TIME[5] = '/'
+	li $t1, 1000
 	div  $a2, $t1
 	mflo  $t0
 	addi  $t0, $t0, 48
-	sw  $t0, 24($a3) #TIME[6] = year / 1000
+	sw  $t0, 6($a3) #TIME[6] = year / 1000
 	mfhi $t0
-	addi $t1, $0, 100
+	li $t1, 100
 	div  $t0, $t1
 	mflo $t0
 	addi  $t0, $t0, 48
-	sw  $t0, 28($a3) #TIME[7] = year % 1000 / 100
+	sw  $t0, 7($a3) #TIME[7] = year % 1000 / 100
 	mfhi $t0
-	addi $t1, $0, 10
+	li $t1, 10
 	div  $t0, $t1
 	mflo $t0
 	addi  $t0, $t0, 48
-	sw  $t0, 32($a3) #TIME[8] = year % 1000 % 100 / 10
+	sw  $t0, 8($a3) #TIME[8] = year % 1000 % 100 / 10
 	mfhi $t0
 	addi  $t0, $t0, 48
-	sw $t0, 36($a3) #TIME[9] = year % 1000 % 100 % 10
-	sw $0, 40($a3) #TIME[10] = '\0'
+	sw $t0, 9($a3) #TIME[9] = year % 1000 % 100 % 10
+	sw $0, 10($a3) #TIME[10] = '\0'
 	add $v0, $a3, $0
 	jr $ra
 
 getMonthName :
+.data
+	Jan : .asciiz "Jan"
+	Feb : .asciiz "Feb"
+	Mar : .asciiz "Mar"
+	Apr : .asciiz "Apr"
+	May : .asciiz "May"
+	Jun : .asciiz "Jun"
+	Jul : .asciiz "Jul"
+	Aug : .asciiz "Aug"
+	Sep : .asciiz "Sep"
+	Oct : .asciiz "Oct"
+	Nov : .asciiz "Nov"
+	Dec : .asciiz "Dec"
+	NoA : .asciiz "N/A"
+.text
 	bne $a0, 1, nJan
 	la $v0, Jan
+	j End1
 	nJan :
-		bne $a0, 2, nFeb
-		la $v0, Feb
+	bne $a0, 2, nFeb
+	la $v0, Feb
+	j End1
 	nFeb :
-		bne $a0, 3, nMar
-		la $v0, Mar
+	bne $a0, 3, nMar
+	la $v0, Mar
+	j End1
 	nMar :
-		bne $a0, 4, nApr
-		la $v0, Apr
+	bne $a0, 4, nApr
+	la $v0, Apr
+	j End1
 	nApr :
-		bne $a0, 5, nMay
-		la $v0, May
+	bne $a0, 5, nMay
+	la $v0, May
+	j End1
 	nMay :
-		bne $a0, 6, nJun
-		la $v0, Jun
+	bne $a0, 6, nJun
+	la $v0, Jun
+	j End1
 	nJun :
-		bne $a0, 7, nJul
-		la $v0, Jul
+	bne $a0, 7, nJul
+	la $v0, Jul
+	j End1
 	nJul :
-		bne $a0, 8, nAug
-		la $v0, Aug
+	bne $a0, 8, nAug
+	la $v0, Aug
+	j End1
 	nAug :
-		bne $a0, 9, nSep
-		la $v0, Sep
+	bne $a0, 9, nSep
+	la $v0, Sep
+	j End1
 	nSep :
-		bne $a0, 10, nOct
-		la $v0, Oct
+	bne $a0, 10, nOct
+	la $v0, Oct
+	j End1
 	nOct :
-		bne $a0, 11, nNov
-		la $v0, Nov
+	bne $a0, 11, nNov
+	la $v0, Nov
+	j End1
 	nNov :
-		bne $a0, 12, nDec
-		la $v0, Dec
+	bne $a0, 12, nDec
+	la $v0, Dec
+	j End1
 	nDec :
-		la $v0, NoA
+	la $v0, NoA
+	End1:
 	jr $ra
 
+
 convert:
+.data
+	res1: .byte 0:12
+.text
+	addi $sp, $sp, -12
+	sw $a0, 0($sp)
+	sw $a1, 4($sp)
+	sw $ra, 8($sp)
+
+	la $t0, res1
+	move $a1, $t0
+	jal strcpy
+	
+	beq $a1, 41, Branch3
+	bne $a1, 65, Next1
+	Branch3:
+	lb $t1, 0($t0)
+	lb $t2, 1($t0)
+	lb $t3, 3($t0)
+	sb $t3, 0($t0)
+	lb $t3, 4($t0)
+	sb $t3, 1($t0)
+	sb $t1, 3($t0)
+	sb $t2, 4($t0)
+	j End8
+
+	Next1: 
+	beq $a1, 42, Branch4
+	bne $a1, 66, Next2
+	Branch4:
+	lb $t1, 0($t0)
+	lb $t2, 1($t0)
+	lb $t3, 3($t0)
+	sb $t3, 0($t0)
+	lb $t3, 4($t0)
+	sb $t3, 1($t0)
+	sb $t1, 3($t0)
+	sb $t2, 4($t0) #Convert A
+	move $a0, $t0
+	jal strlen
+	move $t1, $v0
+	add $t0, $t0, $t1
+	Loop5:	#res[i+1] = res[i]
+	blt $t1, 0, End9
+	lb $t2, 0($t0)
+	sb $t2, 1($t0)	
+	addi $t1, $t1, 1
+	addi $t0, $t0, -1
+	j Loop5
+	End9:
+	jal month #handle character
+	move $a0, $v0
+	jal getMonthName
+	move $t1, $v0
+	lb $t2, 0($t1)
+	lb $t3, 1($t1)
+	lb $t4, 2($t1)
+	sb $t2, 0($t0)
+	sb $t3, 1($t0)
+	sb $t4, 2($t0)
+	li $t2, 32
+	sb $t2, 3($t0)
+	li $t2, 44
+	sb $t2, 6($t0)
+	j End8
+
+	Next2: 
+	beq $a1, 43, Branch5
+	bne $a1, 67, Next3
+	Branch5:
+	move $a0, $t0
+	jal strlen
+	move $t1, $v0
+	add $t0, $t0, $t1
+	Loop6:	#res[i+1] = res[i]
+	blt $t1, 3, End10
+	lb $t2, 0($t0)
+	sb $t2, 1($t0)	
+	addi $t1, $t1, 1
+	addi $t0, $t0, -1
+	j Loop6
+	End10:
+	jal month #handle character
+	move $a0, $v0
+	jal getMonthName
+	move $t1, $v0
+	lb $t2, 0($t1)
+	lb $t3, 1($t1)
+	lb $t4, 2($t1)
+	sb $t2, 3($t0)
+	sb $t3, 4($t0)
+	sb $t4, 5($t0)
+	li $t2, 32
+	sb $t2, 2($t0)
+	li $t2, 44
+	sb $t2, 6($t0)
+	j End8
+	
+	Next3:
+	End8:
+	lw $a0, 0($sp)
+	lw $a1, 4($sp)
+	lw $ra, 8($sp)
+	addi $sp, $sp, 12
 	jr $ra
 
 numberOfDaysInMonth:
 	jr $ra
 
 getStandardDay:
+	addi $sp, $sp, -4
+	sw $ra, 0($sp)
+	jal day
+	move $t0, $v0 #day
+	jal month
+	move $t1, $v0 #month
+	jal year
+	move $t2, $v0 #year
+	li $t3, 4
+	div $t4, $t2, $t3
+	li $t3, 100
+	div $t5, $t2, $t3
+	sub $t4, $t4, $t5
+	li $t3, 400
+	div $t5, $t2, $t3
+	add $t4, $t4, $t5 #bonus = year/4-year/100+year/400
+
+	move $t3, $t0 #sDay = day
+	add $t3, $t3, $t4 #sDay += bonus
+	li $t4, 365
+	mul $t4, $t4, $t2
+	add $t3, $t3, $t4 #sDay += 365*year
+	li $t4, 1
+	Loop1:
+	bge $t4, $t1, End2
+	move $a0, $t4
+	move $a1, $t2
+	jal numberOfDaysInMonth
+	add $t3, $t3, $v0 #sDay += nODIM
+	addi $t4, $t4, 1
+	j Loop1
+
+	End2:
+	move $v0, $t3 #return sDay
+	lw $ra, 0($sp)
+	addi $sp, $sp, 4
 	jr $ra
 
 getTime:
@@ -182,12 +341,140 @@ weekDay:
 	jr $ra
 
 convertToNumber:
+	move $t0, $a0
+	Loop2:
+	lb $t1, 0($t0)
+	beqz $t1, End3
+	bne $t1, 48, End3
+	addi $t0, $t0, 1
+	j Loop2
+	
+	End3:
+	sub $t0, $t0, $a0
+	move $t1, $a0
+	Loop3:
+	lb $t2, 0($t1)
+	beqz $t2, End4
+	addi $t1, $t1, 1
+	j Loop3
+
+	End4:
+	sub $t1, $t1, $a0
+	li $t3, 10
+	move $t2, $t0
+	move $t5, $0
+	Loop4:
+	beq $t0, $t1, End5
+	lb $t4, 0($t0)
+	mul $t2, $t2, $t3
+	addi $t4, $t4, -48
+	add $t2, $t2, $t4
+	addi $t0, $t0, 1
+	j Loop4
+	
+	End5:
+	bge $t2, $a1, Branch1 #if >= lower_bound
+	li $v0, -1
+	j End6
+	Branch1:
+	ble $t2, $a2, Branch2 #if <= upper_bound
+	li $v0, -1
+	j End6
+	Branch2:
+	move $v0, $t2
+	End6:
 	jr $ra
 
 input:
+.data
+	buffer2: .space 100
+	buffer3: .space 100
+	buffer4: .space 100
+   	str1:  .asciiz "Nhap ngay DAY: "
+   	str2:  .asciiz "Nhap thang MONTH: "
+   	str3:  .asciiz "Nhap nam YEAR: "
+.text
+	addi $sp, $sp, -8
+	sw $a0, 0($sp)
+	sw $ra, 4($sp)
+	#day
+   	la $a0, str1 
+   	li $v0, 4
+   	syscall
+
+   	li $v0, 8 
+ 	la $a0, buffer2 
+  	li $a1, 100      
+   	move $t0, $a0   
+   	syscall
+	#month
+	la $a0, str2 
+   	li $v0, 4
+   	syscall
+
+   	li $v0, 8 
+ 	la $a0, buffer3 
+  	li $a1, 100      
+   	move $t1, $a0   
+   	syscall
+	#year
+	la $a0, str3 
+   	li $v0, 4
+   	syscall
+
+   	li $v0, 8 
+ 	la $a0, buffer4 
+  	li $a1, 100      
+   	move $t2, $a0   
+   	syscall
+	#convert
+	#year
+	move $a0, $t2
+	li $a1, 0
+	li $a2, 9999
+	jal convertToNumber
+	move $t3, $v0
+	#month
+	move $a0, $t1
+	li $a1, 1
+	li $a2, 12
+	jal convertToNumber
+	move $t4, $v0
+	beq $t3, -1, End101
+	beq $t4, -1, End101
+	#day
+	move $a0, $t4
+	move $a1, $t3
+	jal numberOfDaysInMonth
+	move $a2, $v0
+	move $a0, $t0
+	li $a1, 1
+	jal convertToNumber
+	move $t5, $v0
+	beq $t5, -1, End101
+	move $a0, $t5
+	move $a1, $t4
+	move $a2, $t3
+	lw $a3, 0($sp)
+	jal date
+	move $a0, $v0
+	j End102
+	End101:
+	li $v0, -1
+	End102:
+	lw $ra, 4($sp)
+	addi $sp, $sp, 8
 	jr $ra
 
 output:
+.data
+	buffer1: .space 20
+.text
+	move $t0, $a0
+	la $a0, buffer1
+	move $a0, $t0
+	li $v0, 4
+	syscall
 	jr $ra
 
 main:
