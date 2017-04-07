@@ -36,7 +36,25 @@ month:	# Lay thang trong chuoi TIME DD/MM/YYYY, bat dau tu $a0
 	add $v0, $v0, $t0	# Cong vo v0
 	jr $ra
 
-year:
+year:	# Lay nam trong chuoi TIME DD/MM/YYYY, bat dau tu $a0
+	lb $t0, 6($a0)	# t0 la ky tu a[6]
+	addi $t0, $t0, -48	# tru 48 ra so
+	li $t1, 1000
+	mul $t0, $t0, $t1	# nhan them 1000 ra hang ngan
+	move $v0, $t0
+	lb $t0, 7($a0)	# t0 la ky tu a[7]
+	addi $t0, $t0, -48	# tru 48 ra so
+	li $t1, 100
+	mul $t0, $t0, $t1	# nhan them 100 ra hang tram
+	add $v0, $v0, $t0	# Cong vo v0
+	lb $t0, 8($a0)	# t0 la ky tu a[8]
+	addi $t0, $t0, -48	# tru 48 ra so
+	li $t1, 10
+	mul $t0, $t0, $t1	# nhan them 10 ra hang chuc
+	add $v0, $v0, $t0	# Cong vo v0
+	lb $t0, 9($a0)	# t0 la ky tu a[9]
+	addi $t0, $t0, -48	# tru 48 ra so
+	add $v0, $v0, $t0	# Cong vo v0
 	jr $ra
 
 leapYearY:
