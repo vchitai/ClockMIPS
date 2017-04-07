@@ -73,7 +73,40 @@ leapYearC:	# Nam DD/MM/YYYY la nam nhuan thi v0 = 1, nguoc lai v0 = 0
 	addi $sp, $sp, 8
 	jr $ra
 
-findTwoLeapYear:
+findTwoLeapYear:	# Tim 2 nam nhuan $v0=lien duoi va $v1=lien tren nam trong chuoi TIME bat dau tu $a0
+	addi $sp, $sp, -8
+	sw $ra, 4($sp)	# luu $ra vao stack
+	sw $a0, 0($sp)	# luu $a0 vao stack
+	jal year	# v0 = year
+	addi $t0, $v0, 0	# t0 = year
+	addi $t1, $v0, 0	# t1 = year
+	Loop12:
+	addi $t0, $t0, -1
+	move $a0, $t0
+	addi $sp, $sp, -8
+	sw $t0, 4($sp)	# luu t0 vao stack
+	sw $t1, 0($sp)	# luu t1 vao stack
+	jal leapYearY	# v0 = leapYearY(year - 1)
+	lw $t1, 0($sp)	# tra lai t1
+	lw $t0, 4($sp)	# tra lai t0
+	addi $sp, $sp, 8
+	beqz $v0, Loop12	# Neu chua gap nam nhuan thi lap lai
+	Loop13:
+	addi $t1, $t1, 1
+	move $a0, $t1
+	addi $sp, $sp, -8
+	sw $t0, 4($sp)	# luu t0 vao stack
+	sw $t1, 0($sp)	# luu t1 vao stack
+	jal leapYearY	# v0 = leapYearY(year + 1)
+	lw $t1, 0($sp)	# tra lai t1
+	lw $t0, 4($sp)	# tra lai t0
+	addi $sp, $sp, 8
+	beqz $v0, Loop13	# Neu chua gap nam nhuan thi lap lai
+	move $v0, $t0
+	move $v1, $t1
+	lw $a0, 0($sp)	#tra lai $a0
+	lw $ra, 4($sp)	# tra lai $ra
+	addi $sp, $sp, 8
 	jr $ra
 	
 strlen:	# Tinh do dai chuoi, bat dau tu $a0, ket thuc bang '\0' (int==0)
