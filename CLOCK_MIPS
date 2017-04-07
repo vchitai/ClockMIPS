@@ -410,8 +410,9 @@ numberOfDaysInMonth:	# v0 = so ngay cua thang a0 nam a1
 	jr $ra
 
 getStandardDay:
-	addi $sp, $sp, -4
+	addi $sp, $sp, -8
 	sw $ra, 0($sp)
+	sw $a0, 4($sp)
 	addi $sp, $sp, -8
 	jal day
 	sw $v0, 0($sp) #day
@@ -455,9 +456,10 @@ getStandardDay:
 	End2:
 	move $v0, $t3 #return sDay
 	lw $ra, 0($sp)
-	addi $sp, $sp, 4
+	lw $a0, 4($sp)
+	addi $sp, $sp, 8
 	jr $ra
-
+	
 getTime:
 	jr $ra
 
