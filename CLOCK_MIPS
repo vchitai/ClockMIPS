@@ -364,7 +364,49 @@ convert:
 	jr $ra
 
 
-numberOfDaysInMonth:
+numberOfDaysInMonth:	# v0 = so ngay cua thang a0 nam a1
+	li $t0, 1
+	beq $a0, $t0, Thang31ngay
+	li $t0, 3
+	beq $a0, $t0, Thang31ngay
+	li $t0, 5
+	beq $a0, $t0, Thang31ngay
+	li $t0, 7
+	beq $a0, $t0, Thang31ngay
+	li $t0, 8
+	beq $a0, $t0, Thang31ngay
+	li $t0, 10
+	beq $a0, $t0, Thang31ngay
+	li $t0, 12
+	beq $a0, $t0, Thang31ngay
+	li $t0, 4
+	beq $a0, $t0, Thang30ngay
+	li $t0, 6
+	beq $a0, $t0, Thang30ngay
+	li $t0, 9
+	beq $a0, $t0, Thang30ngay
+	li $t0, 11
+	beq $a0, $t0, Thang30ngay
+	# con lai thang 2, xet tiep nam a1
+	addi $sp, $sp, -8
+	sw $ra, 4($sp)	# luu ra vao stack
+	sw $a0, 0($sp)	# luu a0 vao stack
+	move $a0, $a1
+	jal leapYearY
+	lw $a0, 0($sp)	# tra lai a0
+	lw $ra, 4($sp)	# tra lai $ra
+	addi $sp, $sp, 8
+	beqz $v0, Thang28ngay
+	li $v0, 29	# Thang 29 ngay
+	jr $ra
+	Thang28ngay:
+	li $v0, 28
+	jr $ra
+	Thang30ngay:
+	li $v0, 30
+	jr $ra
+	Thang31ngay:
+	li $v0, 31
 	jr $ra
 
 getStandardDay:
