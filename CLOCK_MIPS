@@ -421,6 +421,7 @@ getStandardDay:
 	sw $v0, 4($sp) #month
 	jal year
 	move $t2, $v0 #year
+	addi $t2, $t2, -1
 	lw $t0, 0($sp)
 	lw $t1, 4($sp)
 	addi $sp, $sp, 8
@@ -433,6 +434,7 @@ getStandardDay:
 	div $t5, $t2, $t3
 	add $t4, $t4, $t5 #bonus = year/4-year/100+year/400
 
+	addi $t2, $t2, 1
 	move $t3, $t0 #sDay = day
 	add $t3, $t3, $t4 #sDay += bonus
 	li $t4, 365
