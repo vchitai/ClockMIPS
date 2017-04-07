@@ -460,13 +460,90 @@ getStandardDay:
 	addi $sp, $sp, 8
 	jr $ra
 	
-getTime:
+getTime:	# v0 = khoang cach tu TIME_1(a0) toi TIME_2(a1) (don vi ngay)
+	addi $sp, $sp, -12
+	sw $ra, 8($sp)	# luu ra vao stack
+	sw $a0, 4($sp)	# luu a0 vao stack
+	jal getStandardDay
+	sw $v0, 0($sp)	# luu getStandardDay(TIME_1) vao stack
+	move $a0, $a1
+	jal getStandardDay	# v0 = getStandardDay(TIME_2)
+	lw $t0, 0($sp)	# t0 = getStandardDay(TIME_1), duoc tra lai tu stack
+	sub $v0, $v0, $t0	# v0 = getStandardDay(TIME_2) - getStandardDay(TIME_1);
+	lw $a0, 4($sp)	# tra lai a0
+	lw $ra, 8($sp)	# tra lai ra
+	addi $sp, $sp, 12
 	jr $ra
 
-getDayName:
+getDayName:	# a0 == 1.v0=Sun  2.v0=Mon  3.v0=Tues  4.v0=Wed  5.v0=Thurs  6.v0=Fri  7.v0=Sat
+.data
+	Sun : .asciiz "Sun"
+	Mon : .asciiz "Mon"
+	Tue : .asciiz "Tues"
+	Wed : .asciiz "Wed"
+	Thu : .asciiz "Thurs"
+	Fri : .asciiz "Fri"
+	Sat : .asciiz "Sat"
+	NoA11 : .asciiz "N/A"
+.text
+	bne $a0, 1, nSun
+	la $v0, Sun
+	j End11
+	nSun :
+	bne $a0, 2, nMon
+	la $v0, Mon
+	j End11
+	nMon :
+	bne $a0, 3, nTue
+	la $v0, Tue
+	j End11
+	nTue :
+	bne $a0, 4, nWed
+	la $v0, Wed
+	j End11
+	nWed :
+	bne $a0, 5, nThu
+	la $v0, Thu
+	j End11
+	nThu :
+	bne $a0, 6, nFri
+	la $v0, Fri
+	j End11
+	nFri :
+	bne $a0, 7, nSat
+	la $v0, Sat
+	j End11
+	nSat :
+	la $v0, NoA11
+	End11:
 	jr $ra
 
-weekDay:
+weekDay:	# Cho biet TIME(a0) la thu v0 trong tuan, v0={Sun, Mon, Tues,...}
+	addi $sp, $sp, -8
+	sw $ra, 4($sp)	# luu ra vao stack
+	sw $a0, 0($sp)	# luu a0 vao stack
+	# Ngay 10 thang 12 nam 2015 la thu 5. Lay day lam chuan
+	li $a0, 10
+	li $a1, 12
+	li $a2, 2015
+	jal date
+	move $a0, $v0	# a0 = date(10, 12, 2015) = chuan
+	move $a1, $sp	# a1 = TIME
+	jal getTime
+	move $a0, $v0	# a0 = GetTime(chuan, TIME)
+	# a0 = (5 + 7 + (a0 % 7)) % 7;	//5 la thu nam
+	li $t0, 7
+	rem $a0, $a0, $t0 	# a0 = a0 % 7
+	addi $a0, $a0, 7	# () + 7
+	addi $a0, $a0, 5	# () + 5	//5 la thu nam
+	rem $a0, $a0, $t0 	# () % 7
+	bnez $a0, End14	# if (a0 == 0) a0 = 7;
+	li $a0, 7
+	End14:
+	jal getDayName	# v0 = getDayName(a0)
+	lw $a0, 0($sp)	# tra lai a0
+	lw $ra, 4($sp)	# tra lai ra
+	addi $sp, $sp, 8
 	jr $ra
 
 convertToNumber:
