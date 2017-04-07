@@ -134,42 +134,42 @@ date:
 	div  $a0, $t1
 	mflo  $t0
 	addi  $t0, $t0, 48
-	sw  $t0, 0($a3) #TIME[0] = day / 10
+	sb  $t0, 0($a3) #TIME[0] = day / 10
 	mfhi $t0
 	addi  $t0, $t0, 48
-	sw  $t0, 1($a3) #TIME[1] = day % 10
+	sb  $t0, 1($a3) #TIME[1] = day % 10
 	li $t0, 47
-	sw  $t0, 2($a3) #TIME[2] = '/'
+	sb  $t0, 2($a3) #TIME[2] = '/'
 	div  $a1, $t1
 	mflo  $t0
 	addi  $t0, $t0, 48
-	sw  $t0, 3($a3) #TIME[3] = month / 10
+	sb  $t0, 3($a3) #TIME[3] = month / 10
 	mfhi $t0
 	addi  $t0, $t0, 48
-	sw  $t0, 4($a3) #TIME[4] = month % 10
+	sb  $t0, 4($a3) #TIME[4] = month % 10
 	li $t0, 47
-	sw  $t0, 5($a3) #TIME[5] = '/'
+	sb  $t0, 5($a3) #TIME[5] = '/'
 	li $t1, 1000
 	div  $a2, $t1
 	mflo  $t0
 	addi  $t0, $t0, 48
-	sw  $t0, 6($a3) #TIME[6] = year / 1000
+	sb  $t0, 6($a3) #TIME[6] = year / 1000
 	mfhi $t0
 	li $t1, 100
 	div  $t0, $t1
 	mflo $t0
 	addi  $t0, $t0, 48
-	sw  $t0, 7($a3) #TIME[7] = year % 1000 / 100
+	sb  $t0, 7($a3) #TIME[7] = year % 1000 / 100
 	mfhi $t0
 	li $t1, 10
 	div  $t0, $t1
 	mflo $t0
 	addi  $t0, $t0, 48
-	sw  $t0, 8($a3) #TIME[8] = year % 1000 % 100 / 10
+	sb  $t0, 8($a3) #TIME[8] = year % 1000 % 100 / 10
 	mfhi $t0
 	addi  $t0, $t0, 48
-	sw $t0, 9($a3) #TIME[9] = year % 1000 % 100 % 10
-	sw $0, 10($a3) #TIME[10] = '\0'
+	sb $t0, 9($a3) #TIME[9] = year % 1000 % 100 % 10
+	sb $0, 10($a3) #TIME[10] = '\0'
 	add $v0, $a3, $0
 	jr $ra
 	
