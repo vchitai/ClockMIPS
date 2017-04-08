@@ -1010,23 +1010,22 @@ convertToNumber:
 	lb $t1, 0($t0)
 	beqz $t1, End3
 	bne $t1, 48, End3
+	beq $t1, 10, End3
 	addi $t0, $t0, 1
 	j Loop2
 	
 	End3:
-	sub $t0, $t0, $a0
 	move $t1, $a0
 	Loop3:
 	lb $t2, 0($t1)
 	beqz $t2, End4
+	beq $t2, 10, End4
 	addi $t1, $t1, 1
 	j Loop3
 
 	End4:
-	sub $t1, $t1, $a0
 	li $t3, 10
-	move $t2, $t0
-	move $t5, $0
+	move $t2, $0
 	Loop4:
 	beq $t0, $t1, End5
 	lb $t4, 0($t0)
