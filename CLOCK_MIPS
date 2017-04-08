@@ -948,13 +948,13 @@ loop_main:
 		addi $sp, $sp, 20
 
 		add $t2, $v0, $0
-`
+
 		li $v0, 4
 		la $a0, KET_QUA
 		syscall
 
 		li $v0, 1
-		lw $a0, $t2
+		lw $a0, 0($t2)
 		syscall
 
 		#push stack
@@ -983,7 +983,7 @@ loop_main:
 
 		not_leap_year:
 		li $v0, 4
-		la $a0, KHONG_LA_NAM_NHUAN		
+		la $a0, KO_LA_NAM_NHUAN		
 		syscall
 
 		end_if_not_leap_year:
@@ -1078,7 +1078,7 @@ loop_main:
 		not_get_abs:
 
 		li $v0, 1
-		lw $a0, $t5
+		lw $a0, 0($t5)
 		syscall								
 
 		j no_input_error
@@ -1093,7 +1093,7 @@ loop_main:
 		
 		not_id_5:
 
-		bne $t0, 6, nod_id_6
+		bne $t0, 6, not_id_6
 
 		#push stack
 		addi $sp, $sp, -20
@@ -1122,7 +1122,7 @@ loop_main:
 		syscall
 
 		li $v0, 1
-		lw $a0, $t5
+		lw $a0, 0($t5)
 		syscall
 
 		li $v0, 4
@@ -1130,7 +1130,7 @@ loop_main:
 		syscall
 
 		li $v0, 1
-		lw $a0, $t6
+		lw $a0, 0($t6)
 		syscall
 
 		j loop_lua_chon
@@ -1143,7 +1143,7 @@ loop_main:
 
 		not_id_7:
 
-		bne $t0, 8, not_id8
+		bne $t0, 8, not_id_8
 
 		j end_loop_lua_chon
 
