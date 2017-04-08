@@ -128,6 +128,10 @@ loop_main:
 		lw $t4, 16($sp)
 		addi $sp, $sp, 20
 
+		li $v0, 4
+		la $a0, ENDL
+		syscall
+
 		j loop_lua_chon
 	
 		not_id_1:
@@ -141,7 +145,8 @@ loop_main:
 
 		li $v0, 12
 		syscall
-		lb $t1, 0($v0)
+		#lb $t1, 0($v0)
+		move $t1, $v0
 
 		li $v0, 4
 		la $a0, KET_QUA
@@ -169,6 +174,10 @@ loop_main:
 		lw $t3, 12($sp)
 		lw $t4, 16($sp)
 		addi $sp, $sp, 20
+
+		li $v0, 4
+		la $a0, ENDL
+		syscall
 
 		j loop_lua_chon
 			
@@ -204,6 +213,10 @@ loop_main:
 		lw $t4, 16($sp)
 		addi $sp, $sp, 20
 
+		li $v0, 4
+		la $a0, ENDL
+		syscall
+
 		j loop_lua_chon
 	
 		not_id_3:
@@ -237,7 +250,9 @@ loop_main:
 		syscall
 
 		li $v0, 1
-		lw $a0, 0($t2)
+		
+		#lw $a0, 0($t2)
+		move $a0, $t2
 		syscall
 
 		#push stack
@@ -353,15 +368,16 @@ loop_main:
 
 		add $t5, $v0, $0
 
-		slt $t6, $t5, $t0
-		bne $t6, $t0, get_abs
+		slt $t6, $t5, $0
+		bne $t6, $0, get_abs
 		j not_get_abs
 		get_abs:
 		sub $t5, $0, $t5
 		not_get_abs:
 
 		li $v0, 1
-		lw $a0, 0($t5)
+		#lw $a0, 0($t5)
+		move $a0, $t5
 		syscall								
 
 		j no_input_error
@@ -371,6 +387,10 @@ loop_main:
 			syscall
 
 		no_input_error:
+
+		li $v0, 4
+		la $a0, ENDL
+		syscall
 
 		j loop_lua_chon	
 		
@@ -405,7 +425,8 @@ loop_main:
 		syscall
 
 		li $v0, 1
-		lw $a0, 0($t5)
+		#lw $a0, 0($t5)
+		move $a0, $t5
 		syscall
 
 		li $v0, 4
@@ -413,7 +434,12 @@ loop_main:
 		syscall
 
 		li $v0, 1
-		lw $a0, 0($t6)
+		#lw $a0, 0($t6)
+		move $a0, $t6
+		syscall
+
+		li $v0, 4
+		la $a0, ENDL
 		syscall
 
 		j loop_lua_chon
@@ -428,7 +454,7 @@ loop_main:
 
 		bne $t0, 8, not_id_8
 
-		j end_loop_lua_chon
+		j loop_main
 
 		not_id_8:
 		
@@ -441,6 +467,7 @@ end_loop_main:
 
 	li $v0, 10
 	syscall
+
 
 
 day:	# Lay ngay trong chuoi TIME DD/MM/YYYY, bat dau tu $a0, tra ve gia tri so nguyen
