@@ -687,15 +687,17 @@ getMonthName :
 	jr $ra
 
 convert:
-.data
-	res1: .byte 0:12
-.text
 	addi $sp, $sp, -12
 	sw $a0, 0($sp)
 	sw $a1, 4($sp)
 	sw $ra, 8($sp)
-
-	la $t0, res1
+	
+	li $a0, 15
+	li $v0, 9
+	syscall
+	
+	move $t0, $v0
+	lw $a0, 0($sp)
 	move $a1, $t0
 	jal strcpy
 	
@@ -808,7 +810,6 @@ convert:
 	addi $sp, $sp, 12
 	jr $ra
 
-
 numberOfDaysInMonth:	# v0 = so ngay cua thang a0 nam a1
 	li $t0, 1
 	beq $a0, $t0, Thang31ngay
@@ -890,13 +891,17 @@ getStandardDay:
 	bge $t4, $t1, End2
 	move $a0, $t4
 	move $a1, $t2
-	addi $sp, $sp, -8
+	addi $sp, $sp, -16
 	sw $t3, 0($sp)
 	sw $t4, 4($sp)
+	sw $t1, 8($sp)
+	sw $t2, 12($sp)
 	jal numberOfDaysInMonth
 	lw $t3, 0($sp)
 	lw $t4, 4($sp)
-	addi $sp, $sp, 8
+	lw $t1, 8($sp)
+	lw $t2, 12($sp)
+	addi $sp, $sp, 16
 	add $t3, $t3, $v0 #sDay += nODIM
 	addi $t4, $t4, 1
 	j Loop1
@@ -908,7 +913,7 @@ getStandardDay:
 	lw $a1, 8($sp)
 	addi $sp, $sp, 12
 	jr $ra
-	
+		
 getTime:	# v0 = khoang cach tu TIME_1(a0) toi TIME_2(a1) (don vi ngay)
 	addi $sp, $sp, -12
 	sw $ra, 8($sp)	# luu ra vao stack
