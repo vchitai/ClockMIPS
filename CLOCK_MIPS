@@ -986,7 +986,7 @@ weekDay:	# Cho biet TIME(a0) la thu v0 trong tuan, v0={Sun, Mon, Tues,...}
 	la $a3, chuan11
 	jal date
 	move $a0, $v0	# a0 = date(10, 12, 2015) = chuan
-	move $a1, $sp	# a1 = TIME
+	lw $a1, 0($sp)	# a1 = TIME
 	jal getTime
 	move $a0, $v0	# a0 = GetTime(chuan, TIME)
 	# a0 = (5 + 7 + (a0 % 7)) % 7;	//5 la thu nam
