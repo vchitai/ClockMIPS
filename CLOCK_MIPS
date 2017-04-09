@@ -4,7 +4,7 @@ TIME: .space 100
 TIME_1: .space 100
 TIME_2: .space 100
 
-INPUT_ERROR: .asciiz "Chuoi khong hop len, moi ban nhap lai.\n"
+INPUT_ERROR: .asciiz "Chuoi ngay thang nam tren khong hop le, moi ban nhap lai.\n"
 TABLE: .asciiz "----------Ban hay chon 1 trong cac thao tac duoi day----------\n"
 
 C1: .asciiz "1. Xuat chuoi TIME theo dinh dang DD/MM/YYYY.\n"
@@ -32,6 +32,8 @@ INPUT_ERROR_5: .asciiz "1 trong 2 chuoi nhap vao sai cu phap\n"
 HAI_NAM_NHUAN: .asciiz "Hai nam nhuan gan nhat la "
 VA: .asciiz " va "
 ENDL: .asciiz "\n"
+HOP_LE: .asciiz " la chuoi ngay thang nam hop len"
+NHAP_LAI: .asciiz "Moi ban nhap lai lua chon tu 1-9 trong bang lua chon\n"
 
 .text
 
@@ -402,6 +404,7 @@ loop_main:
 
 		bne $t0, 6, not_id_6
 
+		#id == 6
 		#push stack
 		addi $sp, $sp, -20
 		sw $t0, 0($sp)
@@ -451,6 +454,38 @@ loop_main:
 		not_id_6:
 
 		bne $t0, 7, not_id_7
+
+		#id == 7
+		#push stack
+		addi $sp, $sp, -20
+		sw $t0, 0($sp)
+		sw $t1, 4($sp)
+		sw $t2, 8($sp)
+		sw $t3, 12($sp)
+		sw $t4, 16($sp)
+
+		li $v0, 4
+		la $a0, KET_QUA
+		syscall
+
+		add $a0, $s0, $0
+		jal output	
+
+		li $v0, 4
+		la $a0, HOP_LE
+		syscall	
+
+		#pop stack	
+		lw $t0, 0($sp)
+		lw $t1, 4($sp)
+		lw $t2, 8($sp)
+		lw $t3, 12($sp)
+		lw $t4, 16($sp)
+		addi $sp, $sp, 20
+
+		li $v0, 4
+		la $a0, ENDL
+		syscall
 		
 		j loop_lua_chon
 
@@ -461,8 +496,18 @@ loop_main:
 		j loop_main
 
 		not_id_8:
+
+		bne $t0, 9, not_id_9
 		
 		j end_loop_main
+
+		not_id_9:
+
+		li $v0, 4
+		la $a0, NHAP_LAI
+		syscall
+
+		j loop_lua_chon
 
 	end_loop_lua_chon:
 	
