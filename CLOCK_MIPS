@@ -25,14 +25,14 @@ LUA_CHON: .asciiz "Lua chon: "
 KET_QUA: .asciiz "Ket qua: "
 KIEU_DINH_DANG: .asciiz "Nhap kieu dinh dang: "
 
-LA_NAM_NHUAN: .asciiz " la nam nhaun\n"
+LA_NAM_NHUAN: .asciiz " la nam nhuan\n"
 KO_LA_NAM_NHUAN: .asciiz " khong la nam nhuan\n"
 
 INPUT_ERROR_5: .asciiz "1 trong 2 chuoi nhap vao sai cu phap\n"
 HAI_NAM_NHUAN: .asciiz "Hai nam nhuan gan nhat la "
 VA: .asciiz " va "
 ENDL: .asciiz "\n"
-HOP_LE: .asciiz " la chuoi ngay thang nam hop len"
+HOP_LE: .asciiz " la chuoi ngay thang nam hop le"
 NHAP_LAI: .asciiz "Moi ban nhap lai lua chon tu 1-9 trong bang lua chon\n"
 
 .text
