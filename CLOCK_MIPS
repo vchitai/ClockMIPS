@@ -763,7 +763,7 @@ getMonthName :
 	jr $ra
 
 convert:
-	addi $sp, $sp, -12
+	addi $sp, $sp, -16
 	sw $a0, 0($sp)
 	sw $a1, 4($sp)
 	sw $ra, 8($sp)
@@ -773,11 +773,15 @@ convert:
 	syscall
 	
 	move $t0, $v0
+	sw $t0, 12($sp)
 	lw $a0, 0($sp)
 	move $a1, $t0
 	jal strcpy
 	
-	beq $a1, 41, Branch3
+	lw $t0, 12($sp)
+	lw $a0, 0($sp)
+	lw $a1, 4($sp)
+	beq $a1, 97, Branch3
 	bne $a1, 65, Next1
 	Branch3:
 	lb $t1, 0($t0)
@@ -791,7 +795,7 @@ convert:
 	j End8
 
 	Next1: 
-	beq $a1, 42, Branch4
+	beq $a1, 98, Branch4
 	bne $a1, 66, Next2
 	Branch4:
 	lb $t1, 0($t0)
@@ -809,15 +813,17 @@ convert:
 	lw $t0, 0($sp)
 	add $sp, $sp, 4
 	move $t1, $v0
+	addi $t1, $t1, 1
 	add $t0, $t0, $t1
 	Loop5:	#res[i+1] = res[i]
-	blt $t1, 0, End9
+	ble $t1, 0, End9
 	lb $t2, 0($t0)
 	sb $t2, 1($t0)	
-	addi $t1, $t1, 1
+	addi $t1, $t1, -1
 	addi $t0, $t0, -1
 	j Loop5
 	End9:
+	lw $a0, 0($sp)
 	addi $sp, $sp, -4
 	sw $t0, 0($sp)
 	jal month #handle character
@@ -836,10 +842,11 @@ convert:
 	sb $t2, 3($t0)
 	li $t2, 44
 	sb $t2, 6($t0)
+	sb $0, 12($t0)
 	j End8
 
 	Next2: 
-	beq $a1, 43, Branch5
+	beq $a1, 99, Branch5
 	bne $a1, 67, Next3
 	Branch5:
 	move $a0, $t0
@@ -849,15 +856,18 @@ convert:
 	lw $t0, 0($sp)
 	add $sp, $sp, 4
 	move $t1, $v0
+	addi $t1, $t1, 1
 	add $t0, $t0, $t1
 	Loop6:	#res[i+1] = res[i]
 	blt $t1, 3, End10
 	lb $t2, 0($t0)
 	sb $t2, 1($t0)	
-	addi $t1, $t1, 1
+	addi $t1, $t1, -1
 	addi $t0, $t0, -1
 	j Loop6
 	End10:
+	addi $t0, $t0, -2
+	lw $a0, 0($sp)
 	addi $sp, $sp, -4
 	sw $t0, 0($sp)
 	jal month #handle character
@@ -876,16 +886,18 @@ convert:
 	sb $t2, 2($t0)
 	li $t2, 44
 	sb $t2, 6($t0)
+	sb $0, 12($t0)
 	j End8
 	
 	Next3:
 	End8:
+	move $v0, $t0
 	lw $a0, 0($sp)
 	lw $a1, 4($sp)
 	lw $ra, 8($sp)
 	addi $sp, $sp, 12
 	jr $ra
-
+	
 numberOfDaysInMonth:	# v0 = so ngay cua thang a0 nam a1
 	li $t0, 1
 	beq $a0, $t0, Thang31ngay
