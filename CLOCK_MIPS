@@ -149,6 +149,10 @@ loop_main:
 		move $t1, $v0
 
 		li $v0, 4
+		la $a0, ENDL
+		syscall
+
+		li $v0, 4
 		la $a0, KET_QUA
 		syscall
 	
