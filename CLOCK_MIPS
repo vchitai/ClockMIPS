@@ -1163,12 +1163,12 @@ input:
 	lw $t1, 4($sp)
 	lw $t2, 8($sp)
 	lw $t3, 12($sp)
-	lw $t4, 12($sp)
+	lw $t4, 16($sp)
 	addi $sp, $sp, 20
 	beq $t5, -1, End101
 	move $a0, $t5
-	move $a1, $t4
-	move $a2, $t3
+	move $a1, $t3
+	move $a2, $t4
 	lw $a3, 0($sp)
 	jal date
 	move $a0, $v0
