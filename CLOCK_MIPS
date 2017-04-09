@@ -842,6 +842,16 @@ convert:
 	sb $t2, 3($t0)
 	li $t2, 44
 	sb $t2, 6($t0)
+	lb $t2, 10($t0)
+	sb $t2, 11($t0)
+	lb $t2, 9($t0)
+	sb $t2, 10($t0)
+	lb $t2, 8($t0)
+	sb $t2, 9($t0)
+	lb $t2, 7($t0)
+	sb $t2, 8($t0)
+	li $t2, 32
+	sb $t2, 7($t0)
 	sb $0, 12($t0)
 	j End8
 
@@ -886,6 +896,16 @@ convert:
 	sb $t2, 2($t0)
 	li $t2, 44
 	sb $t2, 6($t0)
+	lb $t2, 10($t0)
+	sb $t2, 11($t0)
+	lb $t2, 9($t0)
+	sb $t2, 10($t0)
+	lb $t2, 8($t0)
+	sb $t2, 9($t0)
+	lb $t2, 7($t0)
+	sb $t2, 8($t0)
+	li $t2, 32
+	sb $t2, 7($t0)
 	sb $0, 12($t0)
 	j End8
 	
